@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= title || 'CodeHub' %></title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+<header class="header">
+  <div class="container nav">
+    <a class="brand" href="/">CodeHub</a>
+    <a href="/about">About</a>
+    <a href="/new">New Repo</a>
+    <% if (user) { %>
+      <a href="/u/<%= user.username %>">@<%= user.username %></a>
+      <form action="/logout" method="post"><button>Logout</button></form>
+    <% } else { %>
+      <a href="/login">Sign in</a>
+      <a href="/register">Sign up</a>
+    <% } %>
+  </div>
+</header>
+
+<main class="container" style="min-height:70vh">
+  <%- body %>
+</main>
+
+<footer>
+  <div>© <%= new Date().getFullYear() %> CodeHub — Developed by: Alex Jhon Ponce</div>
+</footer>
+</body>
+</html>
