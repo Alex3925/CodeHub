@@ -1,0 +1,20 @@
+<% layout('layout') -%>
+<div class="flex-center">
+  <h2>Issues — <%= ctx.user.username %>/<%= ctx.repo.name %></h2>
+  <span class="right"></span>
+  <% if (user && user.id === ctx.user.id) { %>
+    <a class="label" href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/issues/new">New issue</a>
+  <% } %>
+</div>
+
+<table class="table">
+  <tr><th>#</th><th>Title</th><th>Status</th><th>Updated</th></tr>
+  <% for (const i of issues) { %>
+    <tr>
+      <td><a href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/issues/<%= i.number %>"><%= i.number %></a></td>
+      <td><%= i.title %></td>
+      <td><span class="<%= i.status === 'open' ? 'status-open' : 'status-closed' %>"><%= i.status %></span></td>
+      <td><%= new Date(i.updated_at).toLocaleString() %></td>
+    </tr>
+  <% } %>
+</table>
