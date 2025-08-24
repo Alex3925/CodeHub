@@ -1,0 +1,27 @@
+<% layout('layout') -%>
+<h2>Issue #<%= issue.number %>: <%= issue.title %></h2>
+<p>Status: <strong><%= issue.status %></strong></p>
+<div class="readme"><%- sanitizeMarkdown(issue.body) %></div>
+
+<h3>Comments</h3>
+<% for (const c of comments) { %>
+  <div class="card">
+    <div>@<%= c.username %> • <%= new Date(c.created_at).toLocaleString() %></div>
+    <div><%- sanitizeMarkdown(c.body) %></div>
+  </div>
+<% } %>
+
+<% if (user) { %>
+  <form method="post" action="/<%= ctx.user.username %>/<%= ctx.repo.name %>/issues/<%= issue.number %>/comment">
+    <label>Write a comment</label>
+    <textarea name="body" rows="6"></textarea>
+    <p class="flex">
+      <button class="primary">Comment</button>
+      <% if (user.id === ctx.user.id && issue.status === 'open') { %>
+        <form method="post" action="/<%= ctx.user.username %>/<%= ctx.repo.name %>/issues/<%= issue.number %>/close">
+          <button class="danger">Close issue</button>
+        </form>
+      <% } %>
+    </p>
+  </form>
+<% } %>
