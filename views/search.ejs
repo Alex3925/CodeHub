@@ -1,0 +1,30 @@
+<% layout('layout') -%>
+<h1>Search</h1>
+<form action="/search">
+  <input name="q" value="<%= q %>" placeholder="Search repos and users..." />
+</form>
+
+<% if (q) { %>
+  <h2>Repositories</h2>
+  <div class="repo-list">
+    <% for (const r of repos) { %>
+      <div class="repo">
+        <div class="name">
+          <a href="/<%= r.username %>/<%= r.name %>"><%= r.username %>/<%= r.name %></a>
+        </div>
+        <div><%= r.description %></div>
+        <div class="badge">★ <%= r.stars_count %></div>
+      </div>
+    <% } %>
+  </div>
+
+  <h2>Users</h2>
+  <div class="repo-list">
+    <% for (const u of users) { %>
+      <div class="repo">
+        <div class="name"><a href="/u/<%= u.username %>">@<%= u.username %></a></div>
+        <div><%= u.email %></div>
+      </div>
+    <% } %>
+  </div>
+<% } %>
