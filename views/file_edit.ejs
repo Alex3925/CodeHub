@@ -1,0 +1,13 @@
+<% layout('layout') -%>
+<h2><%= filePath ? 'Edit ' + filePath : 'Create file' %></h2>
+<form method="post">
+  <% if (!filePath) { %>
+    <label>Path (e.g., src/app.js)</label>
+    <input name="path" required placeholder="path/filename.ext" />
+  <% } %>
+  <label>Content</label>
+  <textarea name="content" rows="18"><%= content %></textarea>
+  <label>Commit message</label>
+  <input name="message" placeholder="Describe your changes" />
+  <p><button class="primary">Commit changes</button></p>
+</form>
