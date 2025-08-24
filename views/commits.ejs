@@ -1,0 +1,13 @@
+<% layout('layout') -%>
+<h2>Commit history — <%= ctx.user.username %>/<%= ctx.repo.name %></h2>
+<table class="table">
+  <tr><th>ID</th><th>Message</th><th>Author</th><th>Date</th></tr>
+  <% for (const c of commits) { %>
+    <tr>
+      <td><a href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/commit/<%= c.id %>"><%= c.id %></a></td>
+      <td><%= c.message %></td>
+      <td>@<%= c.username %></td>
+      <td><%= new Date(c.created_at).toLocaleString() %></td>
+    </tr>
+  <% } %>
+</table>
