@@ -1,0 +1,13 @@
+<% layout('layout') -%>
+<h2>Commit <%= commit.id %></h2>
+<p><strong>Message:</strong> <%= commit.message %></p>
+<p><strong>Date:</strong> <%= new Date(commit.created_at).toLocaleString() %></p>
+<% if (parent) { %><p><strong>Parent:</strong> <a href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/commit/<%= parent.id %>"><%= parent.id %></a></p><% } %>
+<hr/>
+<h3>Changes</h3>
+<% for (const d of diffs) { %>
+  <details class="card" style="margin-bottom:8px">
+    <summary class="mono"><%= d.path %></summary>
+    <pre class="mono"><%- d.patch.replace(/</g,'&lt;') %></pre>
+  </details>
+<% } %>
