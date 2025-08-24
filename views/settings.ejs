@@ -1,0 +1,10 @@
+<% layout('layout') -%>
+<h2>Repository Settings — <%= ctx.user.username %>/<%= ctx.repo.name %></h2>
+
+<form method="post" action="/<%= ctx.user.username %>/<%= ctx.repo.name %>/delete">
+  <p class="card danger">
+    <strong>Danger Zone</strong><br/>
+    Once you delete a repository, there is no going back.<br/><br/>
+    <button class="danger">Delete this repository</button>
+  </p>
+</form>
