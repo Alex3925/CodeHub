@@ -1,0 +1,17 @@
+<% layout('layout') -%>
+<h1>@<%= profile.username %></h1>
+<p><%= profile.bio || '' %></p>
+
+<h2>Repositories</h2>
+<div class="repo-list">
+  <% for (const r of repos) { %>
+    <div class="repo">
+      <div class="name">
+        <a href="/<%= profile.username %>/<%= r.name %>"><%= r.name %></a>
+      </div>
+      <div><%= r.description %></div>
+      <div class="badge">★ <%= r.stars_count %></div>
+      <% if (r.is_private) { %><span class="label">Private</span><% } %>
+    </div>
+  <% } %>
+</div>
