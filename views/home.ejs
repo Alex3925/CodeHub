@@ -1,0 +1,16 @@
+<% layout('layout') -%>
+<h1>Welcome to CodeHub</h1>
+<p>A GitHub-like demo. Create repos, edit files, commit changes, and more.</p>
+
+<h2>Trending repositories</h2>
+<div class="repo-list">
+  <% for (const r of repos) { %>
+    <div class="repo">
+      <div class="name">
+        <a href="/<%= r.username %>/<%= r.name %>"><%= r.username %>/<%= r.name %></a>
+      </div>
+      <div><%= r.description %></div>
+      <div class="badge">★ <%= r.stars_count %></div>
+    </div>
+  <% } %>
+</div>
