@@ -1,0 +1,10 @@
+<% layout('layout') -%>
+<h2 class="mono"><%= ctx.user.username %>/<%= ctx.repo.name %> — <%= filePath %></h2>
+<div class="flex">
+  <div class="right">
+    <% if (user && user.id === ctx.user.id) { %>
+      <a class="label" href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/edit/<%= filePath %>">Edit</a>
+    <% } %>
+  </div>
+</div>
+<pre><code class="language-"><%- content.replace(/</g,'&lt;') %></code></pre>
