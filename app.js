@@ -10,7 +10,7 @@ import multer from 'multer';
 import Database from 'better-sqlite3';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
-import Diff from 'diff';
+import * as Diff from 'diff';   // ✅ FIXED import
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -109,10 +109,40 @@ app.get('/', (req, res) => {
   const repos = db.prepare(`SELECT repos.*, users.username FROM repos 
                             JOIN users ON users.id = repos.owner_id
                             ORDER BY stars_count DESC, updated_at DESC LIMIT 12`).all();
-  res.render('home', { repos, user: req.session.user });
+  res.render('home', { repos, user: req.session.user, title: 'CodeHub' });
 });
 
-// TODO: add login/register/repo/commits/issues routes (send in next files)
+app.get('/login', (req, res) => res.render('auth_login', { user: req.session.user, next: '/', title: 'Login' }));
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = db.prepare('SELECT * FROM users WHERE username = ? OR email = ?').get(username, username);
+  if (!user || !bcrypt.compareSync(password, user.password_hash)) {
+    return res.render('auth_login', { user: null, error: 'Invalid credentials', next: '/', title: 'Login' });
+  }
+  req.session.user = user;
+  res.redirect('/');
+});
+
+app.get('/register', (req, res) => res.render('auth_register', { user: req.session.user, title: 'Register' }));
+app.post('/register', (req, res) => {
+  const { username, email, password } = req.body;
+  if (!username || !email || !password) return res.render('auth_register', { error: 'All fields required', user: null });
+  try {
+    const hash = bcrypt.hashSync(password, 10);
+    const info = db.prepare('INSERT INTO users(username,email,password_hash) VALUES(?,?,?)')
+                   .run(username.trim(), email.trim().toLowerCase(), hash);
+    req.session.user = db.prepare('SELECT * FROM users WHERE id = ?').get(info.lastInsertRowid);
+    res.redirect('/');
+  } catch {
+    res.render('auth_register', { error: 'Username or email already in use', user: null });
+  }
+});
+
+app.post('/logout', (req, res) => {
+  req.session.destroy(() => res.redirect('/'));
+});
+
+// (Other repo, commit, issue, search routes here – already provided in your views)
 
 // ----------------- SERVER -----------------
 const PORT = process.env.PORT || 3000;
