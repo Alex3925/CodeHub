@@ -10,7 +10,8 @@ import multer from 'multer';
 import Database from 'better-sqlite3';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
-import * as Diff from 'diff';   // ✅ FIXED import
+import * as Diff from 'diff';   // ✅ fixed import
+import expressLayouts from 'express-ejs-layouts'; // ✅ add layouts
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,7 +65,7 @@ function initDB() {
     );
   `);
 
-  // Seed default user
+  // Seed default user + repo
   const userCount = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
   if (userCount === 0) {
     const pwd = bcrypt.hashSync('password123', 10);
@@ -90,6 +91,9 @@ initDB();
 // ----------------- APP SETUP -----------------
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(expressLayouts);              // ✅ enable layouts
+app.set('layout', 'layout');          // ✅ default layout file
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan('dev'));
@@ -141,8 +145,6 @@ app.post('/register', (req, res) => {
 app.post('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/'));
 });
-
-// (Other repo, commit, issue, search routes here – already provided in your views)
 
 // ----------------- SERVER -----------------
 const PORT = process.env.PORT || 3000;
