@@ -1,0 +1,52 @@
+<% layout('layout') -%>
+<div class="flex-center">
+  <h1 class="mono"><%= ctx.user.username %>/<%= ctx.repo.name %></h1>
+  <% if (ctx.repo.is_private) { %><span class="label">Private</span><% } %>
+  <span class="right"></span>
+  <a class="label" href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/commits">Commits</a>
+  <a class="label" href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/issues">Issues</a>
+  <% if (user && user.id === ctx.user.id) { %>
+    <a class="label" href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/settings">Settings</a>
+  <% } %>
+</div>
+
+<div class="flex">
+  <div class="card" style="flex:2">
+    <h3>Files</h3>
+    <ul class="tree">
+      <% function render(node, prefix){ %>
+        <% if (!node.children) return; %>
+        <% for (const name in node.children){ const child = node.children[name]; %>
+          <% if (child.type === 'dir'){ %>
+            <li class="folder">📁 <%= name %></li>
+            <ul class="tree"><% render(child, prefix ? prefix + '/' + name : name) %></ul>
+          <% } else { %>
+            <li class="file">📄 <a href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/blob/<%= prefix ? prefix + '/' + name : name %>"><%= name %></a></li>
+          <% } %>
+        <% } %>
+      <% } %>
+      <% render(tree, '') %>
+    </ul>
+
+    <% if (user && user.id === ctx.user.id) { %>
+      <div class="flex">
+        <a class="label" href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/new-file">New file</a>
+        <a class="label" href="/<%= ctx.user.username %>/<%= ctx.repo.name %>/upload">Upload file</a>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="card" style="flex:1">
+    <div class="flex">
+      <form class="right" action="/<%= ctx.user.username %>/<%= ctx.repo.name %>/<%= starred ? 'unstar' : 'star' %>" method="post">
+        <button><%= starred ? 'Unstar' : 'Star' %> ★ <%= ctx.repo.stars_count %></button>
+      </form>
+    </div>
+    <p><%= ctx.repo.description %></p>
+    <p class="label">Last update: <%= new Date(ctx.repo.updated_at).toLocaleString() %></p>
+    <% if (readme) { %>
+      <h3>README.md</h3>
+      <div class="readme"><%- readme %></div>
+    <% } %>
+  </div>
+</div>
